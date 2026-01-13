@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: Task Microservice
+  datasource:
+    url: jdbc:postgresql://postgres:5432/task
+    username: dev
+    password: dev
+    driver-class-name: org.postgresql.Driver
+    data:
+      jdbc:
+        dialect: postgresql
