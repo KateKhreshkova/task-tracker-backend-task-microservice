@@ -9,6 +9,8 @@ import by.katekhreshkova.task_microservice.repositories.TaskRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.UUID;
 import static java.time.LocalDateTime.*;
 
@@ -26,6 +28,12 @@ public class TaskService {
         taskToSave.setStatus(TaskStatus.PENDING);
         taskToSave.setCreatedAt(now());
         return taskConverter.modelToContract(taskRepository.save(taskToSave));
+    }
+    public List<TaskResponse> findAll(UUID userId) {
+        return taskRepository.findAllByUserIdAndDeletedFalse(userId)
+                .stream()
+                .map(taskConverter::modelToContract)
+                .toList();
     }
 
 }
