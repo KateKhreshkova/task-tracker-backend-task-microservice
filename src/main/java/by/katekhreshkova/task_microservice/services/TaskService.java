@@ -9,7 +9,6 @@ import by.katekhreshkova.task_microservice.repositories.TaskRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 import static java.time.LocalDateTime.*;
@@ -29,11 +28,25 @@ public class TaskService {
         taskToSave.setCreatedAt(now());
         return taskConverter.modelToContract(taskRepository.save(taskToSave));
     }
+
     public List<TaskResponse> findAll(UUID userId) {
         return taskRepository.findAllByUserIdAndDeletedFalse(userId)
                 .stream()
                 .map(taskConverter::modelToContract)
                 .toList();
     }
+
+    public TaskResponse update(UUID userId, UUID taskId, TaskRequest req) {
+        Task taskToUpdate = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        taskToUpdate.setTitle(req.title());
+        taskToUpdate.setDescription(req.description());
+        taskToUpdate.setUpdatedAt(now());
+        taskRepository.save(taskToUpdate);
+
+        return taskConverter.modelToContract(taskToUpdate);
+    }
+
 
 }
