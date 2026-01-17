@@ -29,14 +29,14 @@ public class TaskService {
         return taskConverter.modelToContract(taskRepository.save(taskToSave));
     }
 
-    public List<TaskResponse> findAll(UUID userId) {
+    public List<TaskResponse> findAll(@NotNull final UUID userId) {
         return taskRepository.findAllByUserIdAndDeletedFalse(userId)
                 .stream()
                 .map(taskConverter::modelToContract)
                 .toList();
     }
 
-    public TaskResponse update(UUID userId, UUID taskId, TaskRequest req) {
+    public TaskResponse update(@NotNull final UUID userId, @NotNull final UUID taskId, @NotNull final TaskRequest req) {
         Task taskToUpdate = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
@@ -48,7 +48,7 @@ public class TaskService {
         return taskConverter.modelToContract(taskToUpdate);
     }
 
-    public void delete(UUID userId, UUID taskId) {
+    public void delete(@NotNull final UUID userId, @NotNull final UUID taskId) {
         Task taskToDelete = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
