@@ -48,5 +48,13 @@ public class TaskService {
         return taskConverter.modelToContract(taskToUpdate);
     }
 
+    public void delete(UUID userId, UUID taskId) {
+        Task taskToDelete = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        taskToDelete.setDeleted(true);
+        taskRepository.save(taskToDelete);
+    }
+
 
 }
