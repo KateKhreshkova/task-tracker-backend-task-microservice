@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TaskConverter {
-    public TaskResponse modelToContract(@NotNull final Task task){
+    public TaskResponse modelToResponse(@NotNull final Task task){
         return new TaskResponse(
                 task.getId(),
                 task.getUserId(),

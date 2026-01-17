@@ -26,13 +26,13 @@ public class TaskService {
         taskToSave.setDescription(taskRequest.description());
         taskToSave.setStatus(TaskStatus.PENDING);
         taskToSave.setCreatedAt(now());
-        return taskConverter.modelToContract(taskRepository.save(taskToSave));
+        return taskConverter.modelToResponse(taskRepository.save(taskToSave));
     }
 
     public List<TaskResponse> findAll(@NotNull final UUID userId) {
         return taskRepository.findAllByUserIdAndDeletedFalse(userId)
                 .stream()
-                .map(taskConverter::modelToContract)
+                .map(taskConverter::modelToResponse)
                 .toList();
     }
 
@@ -45,7 +45,7 @@ public class TaskService {
         taskToUpdate.setUpdatedAt(now());
         taskRepository.save(taskToUpdate);
 
-        return taskConverter.modelToContract(taskToUpdate);
+        return taskConverter.modelToResponse(taskToUpdate);
     }
 
     public void delete(@NotNull final UUID userId, @NotNull final UUID taskId) {
@@ -63,7 +63,7 @@ public class TaskService {
         completedTask.setStatus(TaskStatus.DONE);
         completedTask.setCompletedAt(now());
         taskRepository.save(completedTask);
-        return taskConverter.modelToContract(completedTask);
+        return taskConverter.modelToResponse(completedTask);
     }
 
 
