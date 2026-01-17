@@ -56,5 +56,15 @@ public class TaskService {
         taskRepository.save(taskToDelete);
     }
 
+    public TaskResponse markDone(@NotNull final UUID userId, @NotNull final UUID taskId) {
+        Task completedTask = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        completedTask.setStatus(TaskStatus.DONE);
+        completedTask.setCompletedAt(now());
+        taskRepository.save(completedTask);
+        return taskConverter.modelToContract(completedTask);
+    }
+
 
 }
