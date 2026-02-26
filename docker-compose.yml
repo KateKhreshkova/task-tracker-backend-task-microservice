@@ -10,16 +10,23 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - micro-net
   task-microservice:
     build: .
-    container_name: task-microservice
+    container_name: task-service
     ports:
-      - "8080:8080"
+      - "8082:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://task-postgres:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       - postgres
+    networks:
+      - micro-net
 volumes:
   pgdata:
+networks:
+  micro-net:
+    external: true
