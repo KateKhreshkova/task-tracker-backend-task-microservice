@@ -15,6 +15,7 @@ package by.katekhreshkova.task_microservice.contracts.req;
 public record TaskRequest(
 
         // Title of the task provided by the user
+        @jakarta.validation.constraints.NotBlank
         String title,
 
         // Description or details of the task

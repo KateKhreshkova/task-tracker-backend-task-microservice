@@ -8,7 +8,10 @@ import by.katekhreshkova.task_microservice.models.TaskStatus;
 import by.katekhreshkova.task_microservice.repositories.TaskRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +63,15 @@ public class TaskService {
         taskToSave.setCreatedAt(now());
 
         // Save task to database and convert it to response DTO
-        return taskConverter.modelToResponse(taskRepository.save(taskToSave));
+        try {
+            return taskConverter.modelToResponse(taskRepository.save(taskToSave));
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Title already exists",
+                    ex
+            );
+        }
     }
 
     /*
@@ -81,7 +92,7 @@ public class TaskService {
 
         // Find task by id and userId, ensure it is not deleted
         Task taskToUpdate = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
 
         // Update task fields
         taskToUpdate.setTitle(req.title());
@@ -91,7 +102,15 @@ public class TaskService {
         taskToUpdate.setUpdatedAt(now());
 
         // Save updated task
-        taskRepository.save(taskToUpdate);
+        try {
+            taskRepository.save(taskToUpdate);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Title already exists",
+                    ex
+            );
+        }
 
         // Convert updated task to response DTO
         return taskConverter.modelToResponse(taskToUpdate);
@@ -104,7 +123,7 @@ public class TaskService {
 
         // Find task belonging to the user
         Task taskToDelete = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
 
         // Mark task as deleted
         taskToDelete.setDeleted(true);
@@ -120,7 +139,7 @@ public class TaskService {
 
         // Find the task belonging to the user
         Task completedTask = taskRepository.findByIdAndUserIdAndDeletedFalse(taskId, userId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
 
         // Change status to DONE
         completedTask.setStatus(TaskStatus.DONE);

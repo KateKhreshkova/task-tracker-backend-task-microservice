@@ -3,6 +3,7 @@ package by.katekhreshkova.task_microservice.controllers;
 import by.katekhreshkova.task_microservice.contracts.req.TaskRequest;
 import by.katekhreshkova.task_microservice.contracts.resp.TaskResponse;
 import by.katekhreshkova.task_microservice.services.TaskService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,7 @@ public class TaskController {
      */
     @PostMapping
     public TaskResponse create(@RequestHeader("X-User-Id") @NotNull final UUID userId,
-                               @RequestBody @NotNull final TaskRequest taskRequest) {
+                               @RequestBody @NotNull @Valid final TaskRequest taskRequest) {
         return taskService.createTask(userId, taskRequest);
     }
 
@@ -67,7 +68,7 @@ public class TaskController {
     @PutMapping("/{taskId}")
     public TaskResponse update(@RequestHeader("X-User-Id") @NotNull final UUID userId,
                                @PathVariable @NotNull final UUID taskId,
-                               @RequestBody @NotNull final TaskRequest taskRequest) {
+                               @RequestBody @NotNull @Valid final TaskRequest taskRequest) {
         return taskService.update(userId, taskId, taskRequest);
     }
 
