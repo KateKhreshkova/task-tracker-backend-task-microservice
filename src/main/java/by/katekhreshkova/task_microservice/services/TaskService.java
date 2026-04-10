@@ -68,7 +68,7 @@ public class TaskService {
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Title already exists",
+                    "You already have a task with this title",
                     ex
             );
         }
@@ -107,7 +107,7 @@ public class TaskService {
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Title already exists",
+                    "You already have a task with this title",
                     ex
             );
         }

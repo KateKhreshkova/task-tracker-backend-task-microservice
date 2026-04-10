@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table(
         name = "tasks",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_tasks_title", columnNames = "title")
+                @UniqueConstraint(name = "uk_tasks_user_id_title", columnNames = {"user_id", "title"})
         }
 )
 @Data
@@ -23,7 +23,7 @@ public class Task {
     @GeneratedValue
     private UUID id;
     private UUID userId;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String title;
     private String description;
     @Enumerated(EnumType.STRING)
